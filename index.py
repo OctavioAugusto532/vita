@@ -1,15 +1,14 @@
 import os
 import json
 from flask import Flask, request, jsonify
+from flask_cors import CORS 
 from openai import OpenAI
 
-
 app = Flask(__name__, static_folder=None)
-
+CORS(app) 
 
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_KEY:
-    
     raise RuntimeError("Defina OPENAI_API_KEY nas Environment Variables do Vercel")
 
 client = OpenAI(api_key=OPENAI_KEY)
@@ -28,7 +27,6 @@ def chat():
         if not user_message:
             return jsonify({"reply": "Envie uma 'message' no body."}), 400
 
-       
         system_prompt = (
             "Você é a SUSI, assistente virtual de saúde. "
             "Seja empática, prática e NÃO forneça diagnóstico definitivo. "
@@ -49,5 +47,4 @@ def chat():
         return jsonify({"reply": reply})
 
     except Exception as e:
-    
         return jsonify({"reply": f"Erro interno: {str(e)}"}), 500
